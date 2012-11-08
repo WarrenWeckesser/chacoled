@@ -1,7 +1,7 @@
 
-from enthought.traits.api import HasTraits, Instance
-from enthought.traits.ui.api import View, Item, HGroup
-from enthought.enable.api import ComponentEditor
+from traits.api import HasTraits, Instance
+from traitsui.api import View, Item, HGroup
+from enable.api import ComponentEditor
 
 from unit_map_editor import UnitMapEditor
 

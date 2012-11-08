@@ -4,7 +4,7 @@ with line segments.
 """
 
 import numpy as np
-from enthought.traits.api import HasTraits, List, Tuple
+from traits.api import HasTraits, List, Tuple
 
 
 def sign(x):
