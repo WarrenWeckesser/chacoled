@@ -13,19 +13,18 @@ from math import sqrt
 import types
 from os.path import basename
 
-from enthought.traits.api import HasTraits, Instance, Float, Property, Str, Dict, \
+from traits.api import HasTraits, Instance, Float, Property, Str, Dict, \
         List, Bool, Int, HTML, on_trait_change, cached_property
-from enthought.traits.ui.api import Item, VGroup, HGroup, View, Handler, Label, \
+from traitsui.api import Item, VGroup, HGroup, View, Handler, Label, \
         InstanceEditor, EnumEditor, RangeEditor, UItem, spring
 
-from enthought.traits.ui.menu import Action, Menu, MenuBar
-from enthought.pyface.action.api import Group as ActionGroup
-from enthought.pyface.api import FileDialog, OK, error
+from traitsui.menu import Action, Menu, MenuBar
+from pyface.action.api import Group as ActionGroup
+from pyface.api import FileDialog, OK, error
 
-
-from enthought.chaco.api import DataRange1D, ColorMapper
-from enthought.chaco.ticks import ShowAllTickGenerator
-from enthought.chaco.default_colormaps import color_map_name_dict
+from chaco.api import DataRange1D, ColorMapper
+from chaco.ticks import ShowAllTickGenerator
+from chaco.default_colormaps import color_map_name_dict
 
 import chacoled
 from colormap_editor import ColormapEditor

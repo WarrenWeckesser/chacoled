@@ -3,10 +3,10 @@ from __future__ import with_statement
 
 from math import sqrt
 
-from enthought.traits.api import List, Tuple, Int, Instance, Enum, Float, \
+from traits.api import List, Tuple, Int, Instance, Enum, Float, \
             Bool, Property, Event, Str, Trait, on_trait_change
-from enthought.enable.api import Component, KeySpec, BasicEvent
-from enthought.pyface.action.api import Action, MenuManager, Separator
+from enable.api import Component, KeySpec, BasicEvent
+from pyface.action.api import Action, MenuManager, Separator
 
 from unit_map import UnitMap
 

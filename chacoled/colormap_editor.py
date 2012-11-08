@@ -2,16 +2,16 @@
 import numpy as np
 
 # Enthought library imports
-from enthought.enable.api import ComponentEditor
+from enable.api import ComponentEditor
 
-from enthought.traits.api import HasTraits, Instance, Property, Event, Enum, Str, \
+from traits.api import HasTraits, Instance, Property, Event, Enum, Str, \
         Float, Range, on_trait_change
-from enthought.traits.ui.api import Item, HGroup, VGroup, View, EnumEditor, RangeEditor
-from enthought.traits.ui.menu import Action, Menu, MenuBar
-from enthought.pyface.action.api import Group as ActionGroup
+from traitsui.api import Item, HGroup, VGroup, View, EnumEditor, RangeEditor
+from traitsui.menu import Action, Menu, MenuBar
+from pyface.action.api import Group as ActionGroup
 
 # Chaco imports
-from enthought.chaco.api import ColorMapper, ColorBar, LinearMapper, DataRange1D
+from chaco.api import ColorMapper, ColorBar, LinearMapper, DataRange1D
 
 # Local imports
 from unit_map import UnitMap
