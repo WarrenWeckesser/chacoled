@@ -17,9 +17,9 @@ execfile(os.path.join('chacoled', '__init__.py'), init_data)
 setup(
     name = 'chacoled',
     description = 'Chaco Colormap Editor',
-    author = 'Warren Weckesser, Enthought, Inc',
-    author_email = 'warren.weckesser@enthought.com',
-    license = 'Proprietary',
+    author = 'Warren Weckesser',
+    author_email = 'warren.weckesser@gmail.com',
+    license = 'BSD',
     packages = find_packages(),
     include_package_data = True,
     version = init_data['__version__'],
