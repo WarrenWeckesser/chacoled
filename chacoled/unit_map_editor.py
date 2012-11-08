@@ -14,6 +14,7 @@ from unit_map import UnitMap
 
 point_fmt = "(%.3f,%.3f)"
 
+
 class UnitMapPlotter(Component):
 
     unit_map = Instance(UnitMap, ())
@@ -26,65 +27,66 @@ class UnitMapPlotter(Component):
     marker_size = Int(7)
 
     background_color = Tuple((1.0, 1.0, 1.0))  # FIXME: Use a Color trait?
-    line_color = Tuple((0.0,0.0,0.0))
-    grid_color = Tuple((0.0,0.0,0.0))
+    line_color = Tuple((0.0, 0.0, 0.0))
+    grid_color = Tuple((0.0, 0.0, 0.0))
 
     grid_resolutions = List([1, 2, 4, 5, 8, 10, 16, 20, 40, 50])
     grid_resolution_index = Int(5)
 
-    _points = Property(List(Tuple), depends_on=['unit_map.points', 'width', 'height'])
+    _points = Property(List(Tuple),
+                       depends_on=['unit_map.points', 'width', 'height'])
 
     def draw(self, gc, view_bounds=None, mode="default"):
-        delta = self.marker_size/2
-        w = self.width - 2*delta
-        h = self.height - 2*delta
+        delta = self.marker_size / 2
+        w = self.width - 2 * delta
+        h = self.height - 2 * delta
         with gc:
-            gc.translate_ctm(self.x+delta, self.y+delta)
+            gc.translate_ctm(self.x + delta, self.y + delta)
             # Background color.
             gc.set_fill_color(self.background_color)
-            gc.move_to(0,0)
-            gc.line_to(w,0)
-            gc.line_to(w,h)
-            gc.line_to(0,h)
-            gc.line_to(0,0)
+            gc.move_to(0, 0)
+            gc.line_to(w, 0)
+            gc.line_to(w, h)
+            gc.line_to(0, h)
+            gc.line_to(0, 0)
             gc.fill_path()
             # Draw the border of the grid.
-            gc.set_fill_color((0.1,0.1,0.1))
-            gc.move_to(0,0)
-            gc.line_to(w,0)
-            gc.line_to(w,h)
-            gc.line_to(0,h)
-            gc.line_to(0,0)
+            gc.set_fill_color((0.1, 0.1, 0.1))
+            gc.move_to(0, 0)
+            gc.line_to(w, 0)
+            gc.line_to(w, h)
+            gc.line_to(0, h)
+            gc.line_to(0, 0)
             gc.stroke_path()
 
             if self.label:
                 gc.set_font(self.font)
                 gc.set_fill_color(self.grid_color + (0.5,))
-                gc.show_text(self.label, (5, h-15))
+                gc.show_text(self.label, (5, h - 15))
 
             # Draw the grid.
             res = self.grid_resolutions[self.grid_resolution_index]
             # Vertical grid lines:
             for k in range(1, res):
-                if 2*k == res:
+                if 2 * k == res:
                     gc.set_line_width(1.5)
                     gc.set_stroke_color(self.grid_color + (0.85,))
                 else:
                     gc.set_line_width(1.0)
                     gc.set_stroke_color(self.grid_color + (0.5,))
-                r = k*w/float(res)
+                r = k * w / float(res)
                 gc.move_to(r, 0)
                 gc.line_to(r, h)
                 gc.stroke_path()
             # Horizontal grid lines:
             for k in range(1, res):
-                if 2*k == res:
+                if 2 * k == res:
                     gc.set_line_width(1.5)
                     gc.set_stroke_color(self.grid_color + (0.85,))
                 else:
                     gc.set_line_width(1.0)
                     gc.set_stroke_color(self.grid_color + (0.5,))
-                r = k*h/float(res)
+                r = k * h / float(res)
                 gc.move_to(0, r)
                 gc.line_to(w, r)
                 gc.stroke_path()
@@ -102,15 +104,15 @@ class UnitMapPlotter(Component):
                 x = point[0] - delta
                 y = point[1] - delta
                 gc.set_fill_color(self.line_color)
-                gc.rect(x, y, 2*delta, 2*delta)
+                gc.rect(x, y, 2 * delta, 2 * delta)
                 gc.draw_path()
 
     # @cached_property
     def _get__points(self):
-        delta = self.marker_size/2
-        w = self.width - 2*delta
-        h = self.height - 2*delta
-        _points = [(p[0]*w, p[1]*h) for p in self.unit_map.points]
+        delta = self.marker_size / 2
+        w = self.width - 2 * delta
+        h = self.height - 2 * delta
+        _points = [(p[0] * w, p[1] * h) for p in self.unit_map.points]
         return _points
 
     @on_trait_change('unit_map, unit_map.points')
@@ -133,7 +135,7 @@ class UnitMapEditor(Component):
 
     event_state = Enum('normal', 'over', 'drag')
 
-    reset_key = Instance(KeySpec, args=("r",))    
+    reset_key = Instance(KeySpec, args=("r",))
     delete_key = Instance(KeySpec, args=("Delete",))
     add_key = Instance(KeySpec, args=("Enter",))
     invert_key = Instance(KeySpec, args=("v",))
@@ -149,7 +151,6 @@ class UnitMapEditor(Component):
     menu = Instance(MenuManager)
     selected_menu = Instance(MenuManager)
 
-    
     menu_event = Instance(BasicEvent)
 
     unit_map = Instance(UnitMap, ())
@@ -162,9 +163,9 @@ class UnitMapEditor(Component):
     marker_size = Int(7)
 
     background_color = Tuple  # FIXME: Use a Color trait?
-    selected_color = Tuple((0.0,1.0,1.0))
-    line_color = Tuple((0.0,0.0,0.0))
-    grid_color = Tuple((0.0,0.0,0.0))
+    selected_color = Tuple((0.0, 1.0, 1.0))
+    line_color = Tuple((0.0, 0.0, 0.0))
+    grid_color = Tuple((0.0, 0.0, 0.0))
 
     grid_resolutions = List([1, 2, 4, 5, 8, 10, 16, 20, 40, 50])
     grid_resolution_index = Int(5)
@@ -172,7 +173,7 @@ class UnitMapEditor(Component):
     snap_to_grid = Bool(False)
 
     clean_tol = Float(1e-5)
-    
+
     loglike_scale = Float(sqrt(2.0))
     power = Float(2.0)
 
@@ -180,33 +181,34 @@ class UnitMapEditor(Component):
 
     updated = Event
 
-    _points = Property(List(Tuple), depends_on=['unit_map.points', 'width', 'height'])
-    
+    _points = Property(List(Tuple),
+                       depends_on=['unit_map.points', 'width', 'height'])
+
     _near_threshold = Int(10)
-    
+
     _drag_index = Int(0)
     _over_index = Int(-1)
 
-
     def make_loglike(self):
         beta = self.loglike_scale
-        n = len(self.unit_map.points)-1
+        n = len(self.unit_map.points) - 1
         if beta == 1.0:
-            points = [(float(k)/n, float(k)/n) for k in range(n+1)]
+            points = [(float(k) / n, float(k) / n) for k in range(n + 1)]
         else:
-            b = beta**n - 1.0
+            b = beta ** n - 1.0
             points = []
             x = 0.0
-            for k in range(0,n+1):
-                y = float(k)/n
-                x = (beta**k - 1)/b
-                points.append((x,y))
+            for k in range(0, n + 1):
+                y = float(k) / n
+                x = (beta ** k - 1) / b
+                points.append((x, y))
         self.unit_map.points = points
         self.set_status_text("Made log-like")
         self.updated = True
 
     def make_power(self):
-        self.unit_map.points = [(x,x**self.power) for (x,y) in self.unit_map.points]
+        self.unit_map.points = [(x, x ** self.power)
+                                for (x, y) in self.unit_map.points]
         self.set_status_text("Made power")
         self.updated = True
 
@@ -216,7 +218,7 @@ class UnitMapEditor(Component):
                 pts = reversed(self.unit_map.points)
             else:
                 pts = self.unit_map.points
-            self.unit_map.points = [(y,x) for (x,y) in pts]
+            self.unit_map.points = [(y, x) for (x, y) in pts]
             self.set_status_text("Transposed")
         else:
             self.set_status_text("Can't transpose, not invertible")
@@ -243,60 +245,61 @@ class UnitMapEditor(Component):
 
     def use_next_grid_size(self, increment=1):
         self.grid_resolution_index = \
-                (self.grid_resolution_index + increment) % len(self.grid_resolutions)
+                ((self.grid_resolution_index + increment) %
+                 len(self.grid_resolutions))
         self.request_redraw()
 
     def draw(self, gc, view_bounds=None, mode="default"):
-        delta = self.marker_size/2
-        w = self.width - 2*delta
-        h = self.height - 2*delta
+        delta = self.marker_size / 2
+        w = self.width - 2 * delta
+        h = self.height - 2 * delta
         with gc:
-            gc.translate_ctm(self.x+delta, self.y+delta)
+            gc.translate_ctm(self.x + delta, self.y + delta)
             # Background color.
             gc.set_fill_color(self.background_color)
-            gc.move_to(0,0)
-            gc.line_to(w,0)
-            gc.line_to(w,h)
-            gc.line_to(0,h)
-            gc.line_to(0,0)
+            gc.move_to(0, 0)
+            gc.line_to(w, 0)
+            gc.line_to(w, h)
+            gc.line_to(0, h)
+            gc.line_to(0, 0)
             gc.fill_path()
             # Draw the border of the grid.
-            gc.set_fill_color((0.1,0.1,0.1))
-            gc.move_to(0,0)
-            gc.line_to(w,0)
-            gc.line_to(w,h)
-            gc.line_to(0,h)
-            gc.line_to(0,0)
+            gc.set_fill_color((0.1, 0.1, 0.1))
+            gc.move_to(0, 0)
+            gc.line_to(w, 0)
+            gc.line_to(w, h)
+            gc.line_to(0, h)
+            gc.line_to(0, 0)
             gc.stroke_path()
 
             if self.label:
                 gc.set_font(self.font)
                 gc.set_fill_color(self.grid_color + (0.5,))
-                gc.show_text(self.label, (5, h-15))
+                gc.show_text(self.label, (5, h - 15))
 
             # Draw the grid.
             res = self.grid_resolutions[self.grid_resolution_index]
             # Vertical grid lines:
             for k in range(1, res):
-                if 2*k == res:
+                if 2 * k == res:
                     gc.set_line_width(1.5)
                     gc.set_stroke_color(self.grid_color + (0.85,))
                 else:
                     gc.set_line_width(1.0)
                     gc.set_stroke_color(self.grid_color + (0.5,))
-                r = k*w/float(res)
+                r = k * w / float(res)
                 gc.move_to(r, 0)
                 gc.line_to(r, h)
                 gc.stroke_path()
             # Horizontal grid lines:
             for k in range(1, res):
-                if 2*k == res:
+                if 2 * k == res:
                     gc.set_line_width(1.5)
                     gc.set_stroke_color(self.grid_color + (0.85,))
                 else:
                     gc.set_line_width(1.0)
                     gc.set_stroke_color(self.grid_color + (0.5,))
-                r = k*h/float(res)
+                r = k * h / float(res)
                 gc.move_to(0, r)
                 gc.line_to(w, r)
                 gc.stroke_path()
@@ -317,7 +320,7 @@ class UnitMapEditor(Component):
                     gc.set_fill_color(self.selected_color)
                 else:
                     gc.set_fill_color(self.line_color)
-                gc.rect(x, y, 2*delta, 2*delta)
+                gc.rect(x, y, 2 * delta, 2 * delta)
                 gc.draw_path()
 
     def normal_mouse_move(self, event):
@@ -325,18 +328,18 @@ class UnitMapEditor(Component):
         over = self._closest_within_threshold(event)
         if over is not None:
             self._over_index = over
-            self.event_state= 'over'
+            self.event_state = 'over'
             self.request_redraw()
 
     def normal_key_pressed(self, event):
         if self.add_key.match(event):
-            delta = self.marker_size/2
+            delta = self.marker_size / 2
             x = event.x - delta
-            w = self.width - 2*delta
-            xx = float(x)/w
+            w = self.width - 2 * delta
+            xx = float(x) / w
             if 0.0 <= xx <= 1.0:
                 yy = self.unit_map.evaluate(xx)
-                self.unit_map.add_point((xx,yy))
+                self.unit_map.add_point((xx, yy))
             self.updated = True
         elif self.invert_key.match(event):
             self.do_vertical_flip()
@@ -365,15 +368,15 @@ class UnitMapEditor(Component):
     def normal_left_dclick(self, event):
         """Left double click: add a point."""
         # FIXME: Duplicated code here and in the key press handler.
-        delta = self.marker_size/2
+        delta = self.marker_size / 2
         x = event.x - delta
-        w = self.width - 2*delta
-        xx = float(x)/w
+        w = self.width - 2 * delta
+        xx = float(x) / w
         if 0.0 <= xx <= 1.0:
             yy = self.unit_map.evaluate(xx)
-            self.unit_map.add_point((xx,yy))
-            self.set_status_text("Added a point at " + point_fmt % (xx,yy))
-        self.updated = True    
+            self.unit_map.add_point((xx, yy))
+            self.set_status_text("Added a point at " + point_fmt % (xx, yy))
+        self.updated = True
 
     def normal_right_up(self, event):
         """Activate the menu."""
@@ -393,7 +396,6 @@ class UnitMapEditor(Component):
             self._over_index = over
             self.request_redraw()
 
-
     def over_left_down(self, event):
         self._drag_index = self._over_index
         self.event_state = 'drag'
@@ -405,7 +407,7 @@ class UnitMapEditor(Component):
         menu.show(event.x, event.window._flip_y(event.y))
 
     def do_delete_selected_point(self):
-        if 0 < self._over_index < len(self._points)-1:
+        if 0 < self._over_index < len(self._points) - 1:
             self.unit_map.points.pop(self._over_index)
             self._over_index = -1
             self.event_state = 'normal'
@@ -453,7 +455,7 @@ class UnitMapEditor(Component):
 
     def drag_mouse_move(self, event):
         k = self._drag_index
-        delta = self.marker_size/2
+        delta = self.marker_size / 2
         x = event.x - delta - 1
         y = event.y - delta - 1
         if k == 0:
@@ -462,9 +464,9 @@ class UnitMapEditor(Component):
         elif k == len(self._points) - 1:
             right_bound = self._points[-1][0]
             left_bound = right_bound
-        else:       
-            left_bound = self._points[k-1][0]
-            right_bound = self._points[k+1][0]
+        else:
+            left_bound = self._points[k - 1][0]
+            right_bound = self._points[k + 1][0]
 
         if x < left_bound:
             x = left_bound
@@ -472,24 +474,25 @@ class UnitMapEditor(Component):
             x = right_bound
         if y < 0:
             y = 0
-        h = self.height - 2*delta
+        h = self.height - 2 * delta
         if y > h:
             y = h
 
         self._points[k] = (x, y)
-        w = self.width - 2*delta
-        h = self.height - 2*delta
-        xx = float(x)/w
-        yy = float(y)/h
-        self.unit_map.points[k] = (xx,yy)
+        w = self.width - 2 * delta
+        h = self.height - 2 * delta
+        xx = float(x) / w
+        yy = float(y) / h
+        self.unit_map.points[k] = (xx, yy)
         self.request_redraw()
-        self.set_status_text("Moved point to " + point_fmt % self.unit_map.points[k])
+        self.set_status_text("Moved point to " + point_fmt %
+                             self.unit_map.points[k])
         self.updated = True
 
     def drag_mouse_leave(self, event):
 
         i = self._drag_index
-        self.release_dragged_point(i)           
+        self.release_dragged_point(i)
 
         self.event_state = 'normal'
         self._drag_index = -1
@@ -501,7 +504,7 @@ class UnitMapEditor(Component):
         i = self._drag_index
         self.release_dragged_point(i)
 
-        over = self._over_point(event)        
+        over = self._over_point(event)
         if over is not None:
             self.event_state = 'over'
             self._over_index = over
@@ -514,17 +517,19 @@ class UnitMapEditor(Component):
     def release_dragged_point(self, i):
         if self.snap_to_grid:
             i = self._drag_index
-            x,y = self.unit_map.points[i]
+            x, y = self.unit_map.points[i]
             res = self.grid_resolutions[self.grid_resolution_index]
-            xx = round(x*res)/res
-            yy = round(y*res)/res
-            if i < len(self.unit_map.points)-1 and xx > self.unit_map.points[i+1][0]:
-                xx = self.unit_map.points[i+1][0]
-            if i > 0 and xx < self.unit_map.points[i-1][0]:
-                xx = self.unit_map.points[i-1][0]
-            self.unit_map.points[i] = (xx,yy)
-        self.set_status_text("Moved point to " + point_fmt % self.unit_map.points[i])
-        self.updated = True         
+            xx = round(x * res) / res
+            yy = round(y * res) / res
+            if (i < len(self.unit_map.points) - 1 and
+                    xx > self.unit_map.points[i + 1][0]):
+                xx = self.unit_map.points[i + 1][0]
+            if i > 0 and xx < self.unit_map.points[i - 1][0]:
+                xx = self.unit_map.points[i - 1][0]
+            self.unit_map.points[i] = (xx, yy)
+        self.set_status_text("Moved point to " + point_fmt %
+                             self.unit_map.points[i])
+        self.updated = True
 
     def set_status_text(self, text):
         if self.label is not None:
@@ -535,10 +540,10 @@ class UnitMapEditor(Component):
 
     # @cached_property
     def _get__points(self):
-        delta = self.marker_size/2
-        w = self.width - 2*delta
-        h = self.height - 2*delta
-        _points = [(p[0]*w, p[1]*h) for p in self.unit_map.points]
+        delta = self.marker_size / 2
+        w = self.width - 2 * delta
+        h = self.height - 2 * delta
+        _points = [(p[0] * w, p[1] * h) for p in self.unit_map.points]
         return _points
 
     @on_trait_change('unit_map, unit_map.points')
@@ -553,12 +558,15 @@ class UnitMapEditor(Component):
 
     def _grid_resolution_index_changed(self):
         self.request_redraw()
-        
+
     def _menu_default(self):
         root = MenuManager(
-            Action(name="Vertical flip", on_perform=self.do_vertical_flip),
-            Action(name="Horizontal flip", on_perform=self.do_horizontal_flip),
-            Action(name="Transpose (flip around y=x)", on_perform=self.do_transpose),
+            Action(name="Vertical flip",
+                   on_perform=self.do_vertical_flip),
+            Action(name="Horizontal flip",
+                   on_perform=self.do_horizontal_flip),
+            Action(name="Transpose (flip around y=x)",
+                   on_perform=self.do_transpose),
             Separator(),
             Action(name="Make log-like", on_perform=self.make_loglike),
             Action(name="Make power function", on_perform=self.make_power),
@@ -569,15 +577,16 @@ class UnitMapEditor(Component):
     def _selected_menu_default(self):
         root = MenuManager(name="selected_menu")
         actions = [
-            Action(name="Delete point", on_perform=self.do_delete_selected_point),
+            Action(name="Delete point",
+                   on_perform=self.do_delete_selected_point),
             ]
         for a in actions:
             root.append(a)
-        return root        
+        return root
 
     def _is_near_point(self, point, event):
-        delta = self.marker_size/2
-        event_point = (event.x-delta, event.y-delta)
+        delta = self.marker_size / 2
+        event_point = (event.x - delta, event.y - delta)
         near = max(abs(point[0] - event_point[0]),
                     abs(point[1] - event_point[1])) \
                         <= self._near_threshold
@@ -591,21 +600,22 @@ class UnitMapEditor(Component):
                 result = i
                 break
         else:
-            result = None            
+            result = None
         return result
 
     def _closest_within_threshold(self, event):
         """
-        Of all the points within self.threshold of the event, return the closest.
+        Of all the points within self.threshold of the event, return the
+        closest.
         Returns None if no points are within self.threshold.
         """
-        delta = self.marker_size/2
+        delta = self.marker_size / 2
         closest = None
         for i, point in enumerate(self._points):
-            dist2 = (point[0] - (event.x-delta))**2 + (point[1] - (event.y-delta))**2
-            if dist2 < self._near_threshold**2:
+            dist2 = ((point[0] - (event.x - delta)) ** 2 +
+                     (point[1] - (event.y - delta)) ** 2)
+            if dist2 < self._near_threshold ** 2:
                 if closest is None or dist2 < closest_dist2:
                     closest = i
                     closest_dist2 = dist2
         return closest
-                    

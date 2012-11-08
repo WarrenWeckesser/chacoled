@@ -4,9 +4,9 @@ import numpy as np
 # Enthought library imports
 from enable.api import ComponentEditor
 
-from traits.api import HasTraits, Instance, Property, Event, Enum, Str, \
-        Float, Range, on_trait_change
-from traitsui.api import Item, HGroup, VGroup, View, EnumEditor, RangeEditor
+from traits.api import (HasTraits, Instance, Property, Event, Enum, Str,
+        Float, Range, on_trait_change)
+from traitsui.api import Item, VGroup, View
 from traitsui.menu import Action, Menu, MenuBar
 from pyface.action.api import Group as ActionGroup
 
@@ -18,9 +18,9 @@ from unit_map import UnitMap
 from unit_map_editor import UnitMapEditor, UnitMapPlotter
 
 
-red_bg = (1.0,0.8,0.8)
-green_bg = (0.8,1.0,0.8)
-blue_bg = (0.8,0.8,1.0)
+red_bg = (1.0, 0.8, 0.8)
+green_bg = (0.8, 1.0, 0.8)
+blue_bg = (0.8, 0.8, 1.0)
 
 
 class ColormapChannel(UnitMap):
@@ -32,8 +32,8 @@ class ColormapChannel(UnitMap):
     def _convert_to_segments(self):
         points = self.points
         point = points[0]
-        segs = [ (point[0], point[1], point[1]) ]
-        for k in range(1,len(points)):
+        segs = [(point[0], point[1], point[1])]
+        for k in range(1, len(points)):
             point = points[k]
             if point[0] == segs[-1][0]:
                 seg = segs.pop()
@@ -50,7 +50,7 @@ class ColormapEditor(HasTraits):
     green_channel = Instance(UnitMapEditor)
     blue_channel = Instance(UnitMapEditor)
 
-    show = Enum('all','red','green','blue')
+    show = Enum('all', 'red', 'green', 'blue')
 
     rgb_background = Enum('RGB tint', 'white', 'black')
     rgb_line_color = Enum('black', 'RGB', 'white')
@@ -59,12 +59,13 @@ class ColormapEditor(HasTraits):
     luminance = Instance(UnitMapPlotter)
     luminance_red = Range(low=0.0, high=1.0, value=0.3)
     luminance_green = Range(low=0.0, high=1.0, value=0.59)
-    luminance_blue = Property(Float, depends_on=['luminance_red','luminance_green'])
+    luminance_blue = Property(Float, depends_on=['luminance_red',
+                                                 'luminance_green'])
 
     colormapper = Property(Instance(ColorMapper))
 
     colorbar = Instance(ColorBar)
-    
+
     color_range = Instance(DataRange1D)
 
     status_text = Str('')
@@ -81,19 +82,25 @@ class ColormapEditor(HasTraits):
         menu_bar = MenuBar(file_menu)
         view = View(
                     VGroup(
-                        Item('red_channel', editor=ComponentEditor(size=(200,125)),
-                                show_label=False,
-                                visible_when='show == "all" or show == "red"'),
-                        Item('green_channel', editor=ComponentEditor(size=(200,125)),
-                                show_label=False,
-                                visible_when='show == "all" or show == "green"'),
-                        Item('blue_channel', editor=ComponentEditor(size=(200,125)),
-                                show_label=False,
-                                visible_when='show == "all" or show == "blue"'),
-                        Item('luminance', editor=ComponentEditor(size=(200,100)),
-                                show_label=False),
-                        Item('colorbar', editor=ComponentEditor(size=(200,100)), 
-                                show_label=False, springy=False, resizable=False),
+                        Item('red_channel',
+                             editor=ComponentEditor(size=(200, 125)),
+                             show_label=False,
+                             visible_when='show == "all" or show == "red"'),
+                        Item('green_channel',
+                             editor=ComponentEditor(size=(200, 125)),
+                             show_label=False,
+                             visible_when='show == "all" or show == "green"'),
+                        Item('blue_channel',
+                             editor=ComponentEditor(size=(200, 125)),
+                             show_label=False,
+                             visible_when='show == "all" or show == "blue"'),
+                        Item('luminance',
+                             editor=ComponentEditor(size=(200, 100)),
+                             show_label=False),
+                        Item('colorbar',
+                             editor=ComponentEditor(size=(200, 100)),
+                             show_label=False, springy=False,
+                             resizable=False),
                         ),
                     resizable=True,
                     # title="Colormap Editor",
@@ -103,20 +110,23 @@ class ColormapEditor(HasTraits):
     #-----------------------------------------------------------------------
     # Traits defaults
     #-----------------------------------------------------------------------
-    
+
     def _red_channel_default(self):
         um = ColormapChannel()
-        ume = UnitMapEditor(unit_map=um, background_color=red_bg, label="Red")
+        ume = UnitMapEditor(unit_map=um, background_color=red_bg,
+                            label="Red")
         return ume
 
     def _green_channel_default(self):
         um = ColormapChannel()
-        ume = UnitMapEditor(unit_map=um, background_color=green_bg, label="Green")
+        ume = UnitMapEditor(unit_map=um, background_color=green_bg,
+                            label="Green")
         return ume
 
     def _blue_channel_default(self):
         um = ColormapChannel()
-        ume = UnitMapEditor(unit_map=um, background_color=blue_bg, label="Blue")
+        ume = UnitMapEditor(unit_map=um, background_color=blue_bg,
+                            label="Blue")
         return ume
 
     def _luminance_default(self):
@@ -148,7 +158,8 @@ class ColormapEditor(HasTraits):
 
     def _get_colormapper(self):
         segment_map = self._segment_map()
-        colormapper = ColorMapper.from_segment_map(segment_map, range=self.color_range)
+        colormapper = ColorMapper.from_segment_map(segment_map,
+                                                   range=self.color_range)
         return colormapper
 
     def _get_luminance_blue(self):
@@ -159,7 +170,8 @@ class ColormapEditor(HasTraits):
     # Trait change handlers
     #-----------------------------------------------------------------------
 
-    @on_trait_change('red_channel.updated, green_channel.updated, blue_channel.updated')
+    @on_trait_change('red_channel.updated, green_channel.updated, '
+                     'blue_channel.updated')
     def _update_image(self, obj, name, value):
         # Update the colorbar.
         if self.colorbar is not None:
@@ -172,16 +184,20 @@ class ColormapEditor(HasTraits):
         # Propagate the updated event.
         self.updated = True
 
-    @on_trait_change('red_channel.updated, green_channel.updated, blue_channel.updated, luminance_red, luminance_green')
-    def _update_luminance(self, obj, name, value):    
+    @on_trait_change('red_channel.updated, green_channel.updated, '
+                     'blue_channel.updated, luminance_red, luminance_green')
+    def _update_luminance(self, obj, name, value):
         # Update the luminance unit map.
-        xvals = sorted(set([x for x,y in self.red_channel.unit_map.points])
-                        | set([x for x,y in self.green_channel.unit_map.points])
-                        | set([x for x,y in self.blue_channel.unit_map.points]))
+        red_x = [x for x, y in self.red_channel.unit_map.points]
+        green_x = [x for x, y in self.green_channel.unit_map.points]
+        blue_x = [x for x, y in self.blue_channel.unit_map.points]
+        xvals = sorted(set(red_x) | set(green_x) | set(blue_x))
         r = np.array([self.red_channel.unit_map.evaluate(x) for x in xvals])
         g = np.array([self.green_channel.unit_map.evaluate(x) for x in xvals])
         b = np.array([self.blue_channel.unit_map.evaluate(x) for x in xvals])
-        lum = list(self.luminance_red * r + self.luminance_green * g + self.luminance_blue * b)
+        lum = list(self.luminance_red * r +
+                   self.luminance_green * g +
+                   self.luminance_blue * b)
         self.luminance.unit_map.points = zip(xvals, lum)
 
     def _rgb_background_changed(self):
@@ -190,37 +206,37 @@ class ColormapEditor(HasTraits):
             self.green_channel.background_color = green_bg
             self.blue_channel.background_color = blue_bg
         elif self.rgb_background == 'white':
-            self.red_channel.background_color = (1,1,1)
-            self.green_channel.background_color = (1,1,1)
-            self.blue_channel.background_color = (1,1,1)
+            self.red_channel.background_color = (1, 1, 1)
+            self.green_channel.background_color = (1, 1, 1)
+            self.blue_channel.background_color = (1, 1, 1)
         else:
-            self.red_channel.background_color = (0,0,0)
-            self.green_channel.background_color = (0,0,0)
-            self.blue_channel.background_color = (0,0,0)
+            self.red_channel.background_color = (0, 0, 0)
+            self.green_channel.background_color = (0, 0, 0)
+            self.blue_channel.background_color = (0, 0, 0)
 
     def _rgb_line_color_changed(self):
         if self.rgb_line_color == 'RGB':
-            self.red_channel.line_color = (1,0,0)
-            self.green_channel.line_color = (0,1,0)
-            self.blue_channel.line_color = (0,0,1)
+            self.red_channel.line_color = (1, 0, 0)
+            self.green_channel.line_color = (0, 1, 0)
+            self.blue_channel.line_color = (0, 0, 1)
         elif self.rgb_line_color == 'white':
-            self.red_channel.line_color = (1,1,1)
-            self.green_channel.line_color = (1,1,1)
-            self.blue_channel.line_color = (1,1,1)
+            self.red_channel.line_color = (1, 1, 1)
+            self.green_channel.line_color = (1, 1, 1)
+            self.blue_channel.line_color = (1, 1, 1)
         else:
-            self.red_channel.line_color = (0,0,0)
-            self.green_channel.line_color = (0,0,0)
-            self.blue_channel.line_color = (0,0,0)
+            self.red_channel.line_color = (0, 0, 0)
+            self.green_channel.line_color = (0, 0, 0)
+            self.blue_channel.line_color = (0, 0, 0)
 
     def _grid_color_changed(self):
         if self.grid_color == 'black':
-            self.red_channel.grid_color = (0,0,0)
-            self.green_channel.grid_color = (0,0,0)
-            self.blue_channel.grid_color = (0,0,0)
+            self.red_channel.grid_color = (0, 0, 0)
+            self.green_channel.grid_color = (0, 0, 0)
+            self.blue_channel.grid_color = (0, 0, 0)
         elif self.grid_color == 'white':
-            self.red_channel.grid_color = (1,1,1)
-            self.green_channel.grid_color = (1,1,1)
-            self.blue_channel.grid_color = (1,1,1)
+            self.red_channel.grid_color = (1, 1, 1)
+            self.green_channel.grid_color = (1, 1, 1)
+            self.blue_channel.grid_color = (1, 1, 1)
 
     #-----------------------------------------------------------------------
     # Public methods
@@ -244,6 +260,6 @@ class ColormapEditor(HasTraits):
 
 
 if __name__ == "__main__":
-    
+
     colormap_editor = ColormapEditor()
     colormap_editor.configure_traits()

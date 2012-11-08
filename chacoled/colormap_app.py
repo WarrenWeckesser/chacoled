@@ -13,10 +13,10 @@ from math import sqrt
 import types
 from os.path import basename
 
-from traits.api import HasTraits, Instance, Float, Property, Str, Dict, \
-        List, Bool, Int, HTML, on_trait_change, cached_property
-from traitsui.api import Item, VGroup, HGroup, View, Handler, Label, \
-        InstanceEditor, EnumEditor, RangeEditor, UItem, spring
+from traits.api import (HasTraits, Instance, Float, Property, Str, Dict,
+        List, Bool, Int, HTML, on_trait_change, cached_property)
+from traitsui.api import (Item, VGroup, HGroup, View, Handler,
+        InstanceEditor, EnumEditor, RangeEditor, UItem, spring)
 
 from traitsui.menu import Action, Menu, MenuBar
 from pyface.action.api import Group as ActionGroup
@@ -33,17 +33,18 @@ from colormap_editor import ColormapEditor
 def segments_to_points(segs):
     points = []
     for seg in segs:
-        points.append((seg[0],seg[1]))
+        points.append((seg[0], seg[1]))
         if seg[1] != seg[2]:
-            points.append((seg[0],seg[2]))
+            points.append((seg[0], seg[2]))
     return points
 
 
 class HelpDialog(HasTraits):
     """
-    A Help Dialog for the Colormap Editor application.  Creating an instance of this
-    class will open a new window containing a description of the program.
-    
+    A Help Dialog for the Colormap Editor application.  Creating an instance
+    of this class will open a new window containing a description of the
+    program.
+
     """
 
     help_text = r"""
@@ -67,8 +68,8 @@ class HelpDialog(HasTraits):
     </tr>
     <tr>
         <td>Delete</td>
-        <td>Delete the currently selected point (i.e. the point over which the mouse
-        pointer is currently hovering).</td>
+        <td>Delete the currently selected point (i.e. the point over which the
+        mouse pointer is currently hovering).</td>
     </tr>
     <tr>
         <td>h</td>
@@ -92,7 +93,7 @@ class HelpDialog(HasTraits):
         <td>l</td>
         <td>Change shape to "log-like": all current points are modified
             so that the vertical spacing is uniform while the ratio of the
-            lengths of adjacent horizontal intervals is constant. 
+            lengths of adjacent horizontal intervals is constant.
             </td>
     </tr>
     <tr>
@@ -115,29 +116,30 @@ class HelpDialog(HasTraits):
     </html>
     """ % dict(version=chacoled.__version__)
     t1 = HTML(help_text)
-    
+
     view = View(
-               Item('t1',show_label=False,width=540,height=500),
+               Item('t1', show_label=False, width=540, height=500),
                title='chacoled - Help',
                resizable=True,
                buttons=['OK'])
-    
-    def __init__(self,**kwargs):
-        super(HelpDialog,self).__init__(**kwargs)
+
+    def __init__(self, **kwargs):
+        super(HelpDialog, self).__init__(**kwargs)
         self.configure_traits()
 
 
 class Preferences(HasTraits):
     """
-    This class provides a UI that changes some setting for a list of UnitMapEditors.
+    This class provides a UI that changes some setting for a list of
+    UnitMapEditors.
     """
 
     colormap_editor = Instance(ColormapEditor)
-    
+
     unit_map_editors = Property(List, depends_on=['colormap_editor'])
 
     snap_to_grid = Bool
-    
+
     # This is the comment displayed to the right of the snap-to-grid check box.
     # A Label in the view would be simpler, but Label objects have vertical
     # alignment issues--they don't align the text baseline with Item labels.
@@ -153,7 +155,7 @@ class Preferences(HasTraits):
     grid_resolution = Int
 
     grid_spacing = Float
-    
+
     # A Str Traits, because 'Label' UI elements don't work quite right.
     lum_coeff_label = Str('Luminance coefficients:')
 
@@ -164,39 +166,49 @@ class Preferences(HasTraits):
             View(
                 HGroup(
                     Item('snap_to_grid', label="Snap-to-grid"),
-                    Item('snap_to_grid_comment', show_label=False, style='readonly'),
+                    Item('snap_to_grid_comment', show_label=False,
+                         style='readonly'),
                     ),
                 HGroup(
-                    Item('grid_resolution', editor=EnumEditor(name='grid_resolutions')),
+                    Item('grid_resolution',
+                         editor=EnumEditor(name='grid_resolutions')),
                     Item('grid_spacing', style='readonly'),
                     ),
                 '_',
                 VGroup(
                     Item('clean_tol', label='Tolerance for clean'),
                     Item('loglike_scale', label='Log-like scale',
-                            editor=RangeEditor(low=0.5, high=2.0, format="%5.3f")),
+                         editor=RangeEditor(low=0.5, high=2.0,
+                                            format="%5.3f")),
                     Item('power', label='Power',
-                            editor=RangeEditor(low=0.125, high=8.0, format="%5.3f")),
+                         editor=RangeEditor(low=0.125, high=8.0,
+                                            format="%5.3f")),
                 ),
                 '_',
                 VGroup(
-                    Item('object.colormap_editor.rgb_background', label='Background color'),
-                    Item('object.colormap_editor.rgb_line_color', label='Line color'),
-                    Item('object.colormap_editor.grid_color', label='Grid color'),
-                    Item('object.colormap_editor.show', label='Show'),
+                    Item('object.colormap_editor.rgb_background',
+                         label='Background color'),
+                    Item('object.colormap_editor.rgb_line_color',
+                         label='Line color'),
+                    Item('object.colormap_editor.grid_color',
+                         label='Grid color'),
+                    Item('object.colormap_editor.show',
+                         label='Show'),
                 ),
                 '_',
                 VGroup(
                     UItem('lum_coeff_label', style='readonly'),
                     VGroup(
-                        Item('object.colormap_editor.luminance_red', label='Red',
-                                editor=RangeEditor(low=0.0, label_width=50)),
-                        Item('object.colormap_editor.luminance_green', label='Green',
-                                enabled_when='green_max != 0',
-                                editor=RangeEditor(low=0.0, high_name='green_max',
-                                                            label_width=50)),
-                        Item('object.colormap_editor.luminance_blue', label='Blue',
-                                enabled_when='False'),
+                        Item('object.colormap_editor.luminance_red',
+                             label='Red',
+                             editor=RangeEditor(low=0.0, label_width=50)),
+                        Item('object.colormap_editor.luminance_green',
+                             label='Green', enabled_when='green_max != 0',
+                             editor=RangeEditor(low=0.0,
+                                                high_name='green_max',
+                                                label_width=50)),
+                        Item('object.colormap_editor.luminance_blue',
+                             label='Blue', enabled_when='False'),
                     ),
                 ),
                 title='Preferences',
@@ -216,7 +228,7 @@ class Preferences(HasTraits):
     @on_trait_change('snap_to_grid')
     def changed_snap_to_grid(self):
         for ume in self.unit_map_editors:
-            ume.snap_to_grid = self.snap_to_grid   
+            ume.snap_to_grid = self.snap_to_grid
 
     @on_trait_change('loglike_scale')
     def changed_loglike_scale(self):
@@ -230,22 +242,23 @@ class Preferences(HasTraits):
 
     @on_trait_change('grid_resolution')
     def changed_grid_resolution(self):
-        self.grid_spacing = 1.0/self.grid_resolution
+        self.grid_spacing = 1.0 / self.grid_resolution
         for ume in self.unit_map_editors:
             ume.grid_resolution_index = \
                 ume.grid_resolutions.index(self.grid_resolution)
         lum = self.colormap_editor.luminance
-        lum.grid_resolution_index = lum.grid_resolutions.index(self.grid_resolution)
+        lum.grid_resolution_index = \
+            lum.grid_resolutions.index(self.grid_resolution)
 
-        # FIXME: The ColorMapEditor's API should be extended to make the following
-        # more concise.
+        # FIXME: The ColorMapEditor's API should be extended to make the
+        # following more concise.
         self.colormap_editor.colorbar._grid.grid_interval = self.grid_spacing
         if self.grid_resolution % 5 == 0 or self.grid_resolution == 1:
             self.colormap_editor.colorbar._axis.tick_generator =\
-                ShowAllTickGenerator(positions=[0,0.2, 0.4, 0.6, 0.8, 1.0])
+                ShowAllTickGenerator(positions=[0, 0.2, 0.4, 0.6, 0.8, 1.0])
         else:
             self.colormap_editor.colorbar._axis.tick_generator =\
-                ShowAllTickGenerator(positions=[0,0.25, 0.5, 0.75, 1.0])
+                ShowAllTickGenerator(positions=[0, 0.25, 0.5, 0.75, 1.0])
         self.colormap_editor.colorbar._axis.updated = True
 
     #-----------------------------------------------------------------------
@@ -262,7 +275,7 @@ class Preferences(HasTraits):
     def _get_green_max(self):
         green_max = 1.0 - self.colormap_editor.luminance_red
         return green_max
-    
+
 
 class ColormapAppHandler(Handler):
 
@@ -275,8 +288,8 @@ class ColormapAppHandler(Handler):
         if dialog.open() == OK:
             if dialog.path.endswith('.cmap'):
                 # Read the colormap data file.
-                # First read the name from the first line, then use ColorMap.from_file()
-                # to actually load the color map.
+                # First read the name from the first line, then use
+                # ColorMap.from_file() to actually load the color map.
                 with open(dialog.path, 'r') as f:
                     name = f.readline().strip()
                 color_mapper = ColorMapper.from_file(dialog.path)
@@ -285,7 +298,7 @@ class ColormapAppHandler(Handler):
                 # Look for a function that is a color map factory that was
                 # created by this application; these are functions with the
                 # attribute `_colormap_data`.
-                
+
                 # Get the basename, and chop off '.py'.
                 name = basename(dialog.path)[:-3]
 
@@ -293,7 +306,8 @@ class ColormapAppHandler(Handler):
                 try:
                     f = open(dialog.path, 'r')
                 except IOError:
-                    error(None, 'Unable to read "%s"' % dialog.path, 'File Error')
+                    error(None, 'Unable to read "%s"' % dialog.path,
+                          'File Error')
                     return
                 # Try to import the script.
                 module = types.ModuleType(str(name))
@@ -301,42 +315,45 @@ class ColormapAppHandler(Handler):
                 try:
                     exec f in module.__dict__
                 except Exception, e:
-                    error(None,'An error occurred while importing "%s".\n\n%s' %
-                                (dialog.path,e), 'Import Error')
+                    error(None,
+                          ('An error occurred while importing "%s".\n\n%s' %
+                           (dialog.path, e)),
+                          'Import Error')
                     return
                 finally:
                     f.close()
                 for name, obj in module.__dict__.items():
                     if isinstance(obj, types.FunctionType) and \
-                                                hasattr(obj, '_colormap_data'):
-                        # Found the function.  Call it, and load the ColorMapper
-                        # that it generates. 
+                                            hasattr(obj, '_colormap_data'):
+                        # Found the function.  Call it, and load the
+                        # ColorMapper that it generates.
                         cm = obj(range=DataRange1D(low=0, high=1))
                         info.object._load_color_mapper(name, cm)
                         break
                 else:
-                    msg1 = 'A ColorMapper factory function was not found in "%s".\n\n' % \
-                                dialog.path
-                    msg2 = 'Such a function has the attribute "_colormap_data".'
+                    msg1 = (('A ColorMapper factory function was not found'
+                             ' in "%s".\n\n') % dialog.path)
+                    msg2 = ('Such a function has the attribute '
+                            '"_colormap_data".')
                     error(None, msg1 + msg2, 'Not found')
             else:
-                msg = 'The file "%s" has an unknown file extension.\n\n' % dialog.path
+                msg = ('The file "%s" has an unknown file extension.\n\n' %
+                       dialog.path)
                 msg = msg + 'Known extensions are:\n'
                 msg = msg + '  .cmap\n        A Chaco-format colormap file\n'
-                msg = msg + '  .py \n        The python file must contain a function'
-                msg = msg + ' that was created by this program.'   
-                error(None, msg, 'Unknown file extension')                
-
+                msg = msg + '  .py \n        The python file must contain a'
+                msg = msg + ' function that was created by this program.'
+                error(None, msg, 'Unknown file extension')
 
     def export_chaco_file(self, info):
         """Implements the "File / Export / Chaco file format" menu item."""
 
-        dialog  = FileDialog(parent=info.ui.control,
-                                default_filename=info.object.name + ".cmap",
-                                action='save as',
-                                title='Chaco colormap data file')
+        dialog = FileDialog(parent=info.ui.control,
+                            default_filename=info.object.name + ".cmap",
+                            action='save as',
+                            title='Chaco colormap data file')
         if dialog.open() == OK:
-            f = open(dialog.path,'w')
+            f = open(dialog.path, 'w')
             f.write('%s\n' % info.object.name)
 
             # Small value used to ensure that the offset values (i.e. the `t`
@@ -352,11 +369,11 @@ class ColormapAppHandler(Handler):
                         (green_um.points[:], green_um),
                         (blue_um.points[:],  blue_um)]
 
-            # Build a list of 4-tuples of the form (t,r,g,b), where t increases
-            # from 0 to 1.  tstar and eps are used to add small perturbations that
-            # convert discontinuities into very steep segments. (Actually, I'm not
-            # sure this is necessary; I don't know if Chaco handles discontinuities
-            # in the file format.)
+            # Build a list of 4-tuples of the form (t,r,g,b), where t
+            # increases from 0 to 1.  tstar and eps are used to add small
+            # perturbations that convert discontinuities into very steep
+            # segments. (Actually, I'm not sure this is necessary; I don't
+            # know if Chaco handles discontinuities in the file format.)
             tprev = None
             while len(channels[0][0]) > 0:
                 t = min(channel[0][0][0] for channel in channels)
@@ -373,7 +390,7 @@ class ColormapAppHandler(Handler):
                     else:
                         value = um.evaluate(tstar)
                         values.append(value)
-                fmt =' '.join(["%.12f"]*len(values)) + '\n'
+                fmt = ' '.join(["%.12f"] * len(values)) + '\n'
                 s = fmt % tuple(values)
                 f.write(s)
                 tprev = tstar
@@ -383,35 +400,37 @@ class ColormapAppHandler(Handler):
     def export_chaco_python(self, info):
         """Implements the "File / Export / Chaco python code" menu item."""
 
-        dialog  = FileDialog(parent=info.ui.control, 
-                                default_filename=info.object.name + ".py",
-                                action='save as',
-                                title='Chaco python file')
+        dialog = FileDialog(parent=info.ui.control,
+                            default_filename=info.object.name + ".py",
+                            action='save as',
+                            title='Chaco python file')
         if dialog.open() == OK:
-            # The data is attached to the function as an attribute.  This will allow a
-            # program to import a module, look for functions in the module that have
-            # the _colormap_data attribute and recover the data without having to
-            # call the function.
-            f = open(dialog.path,'w')
+            # The data is attached to the function as an attribute.  This
+            # will allow a program to import a module, look for functions in
+            # the module that have the _colormap_data attribute and recover
+            # the data without having to call the function.
+            f = open(dialog.path, 'w')
             f.write('\n')
             f.write('from enthought.chaco.api import ColorMapper\n\n')
             f.write('def %s(range, **traits):\n' % info.object.name)
-            f.write('    """Generator for the colormap "%s"."""\n' % info.object.name)
-            f.write('    return ColorMapper.from_segment_map(%s._colormap_data, range=range, **traits)\n\n' % info.object.name)
+            f.write('    """Generator for the colormap "%s"."""\n' %
+                    info.object.name)
+            f.write(('    return ColorMapper.from_segment_map('
+                     '%s._colormap_data, range=range, **traits)\n\n') %
+                    info.object.name)
             f.write('%s._colormap_data = ' % info.object.name)
             segment_map = info.object.colormap_editor._segment_map()
             seg_code = '%r' % segment_map
-            seg_code = seg_code.replace("'red'","\n        'red'")
-            seg_code = seg_code.replace("'green'","\n        'green'")
-            seg_code = seg_code.replace("'blue'","\n        'blue'")
-            seg_code = seg_code.replace("}","\n        }")
+            seg_code = seg_code.replace("'red'", "\n        'red'")
+            seg_code = seg_code.replace("'green'", "\n        'green'")
+            seg_code = seg_code.replace("'blue'", "\n        'blue'")
+            seg_code = seg_code.replace("}", "\n        }")
             f.write(seg_code)
             f.close()
 
     def preferences(self, info):
         """Implements the "File / Preferences" menu item."""
         info.object.preferences.edit_traits()
-
 
     def exit(self, info):
         info.ui.dispose()
@@ -426,12 +445,13 @@ class ColormapApp(HasTraits):
     # User-defined name of the color map.
     name = Str
 
-    # Dictionary of colormap names and corresponding functions, imported from Chaco.
+    # Dictionary of colormap names and corresponding functions,
+    # imported from Chaco.
     colormap_dict = Dict
 
     # The list of the keys in colormap_dict.
     colormap_names = Property(List(Str), depends_on=['colormap_dict'])
-    
+
     # Name of the Chaco colormap selected by the user.
     colormap_name = Str
 
@@ -439,7 +459,7 @@ class ColormapApp(HasTraits):
     colormap_editor = Instance(ColormapEditor, ())
 
     preferences = Instance(Preferences)
-    
+
     status_text = Str('')
 
     def trait_view(self, parent=None):
@@ -447,8 +467,10 @@ class ColormapApp(HasTraits):
                         Action(name='Import', action='import_colormap'),
                         Menu(
                             ActionGroup(
-                                Action(name='Chaco file format', action='export_chaco_file'),
-                                Action(name='Chaco python code', action='export_chaco_python'),
+                                Action(name='Chaco file format',
+                                       action='export_chaco_file'),
+                                Action(name='Chaco python code',
+                                       action='export_chaco_python'),
                                 ),
                             name='Export',
                             )
@@ -482,11 +504,10 @@ class ColormapApp(HasTraits):
                     )
         return view
 
-
     #------------------------------------------------------------------
     # Trait defaults
     #------------------------------------------------------------------
-    
+
     def _name_default(self):
         return "Untitled"
 
@@ -514,12 +535,12 @@ class ColormapApp(HasTraits):
     #------------------------------------------------------------------
 
     def _colormap_name_changed(self):
-        if self.colormap_name not in ['','none']:
+        if self.colormap_name not in ['', 'none']:
             func = self.colormap_dict[self.colormap_name]
 
             # Create the ColorMapper object.
             cm = func(range=DataRange1D(low=0, high=1))
-            
+
             self._load_color_mapper(self.colormap_name, cm)
 
     @on_trait_change('colormap_editor.updated')
@@ -527,7 +548,8 @@ class ColormapApp(HasTraits):
         # The user has changed the colormap, so set `colormap_name` to 'none',
         # since it is no longer the same as the map that was loaded.
         self.colormap_name = 'none'
-        # Hmmm... why doesn't this update the displayed name (at least on a Mac)?
+        # Hmmm... why doesn't this update the displayed name (at least on
+        # a Mac)?
 
         self.status_text = self.colormap_editor.status_text
 
@@ -551,7 +573,7 @@ class ColormapApp(HasTraits):
         # This will trigger an update of the color bar.
         # FIXME: This should not be necessary.  Changing `points` in any of the
         # unit maps should propagate up to an event that causes the color bar
-        # to update. 
+        # to update.
         self.colormap_editor.blue_channel.updated = True
         self.status_text = "Loaded %s" % name
 

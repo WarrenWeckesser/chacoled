@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 
 import os
-import sys
 
 from setuptools import setup, find_packages
 
@@ -15,18 +14,17 @@ execfile(os.path.join('chacoled', '__init__.py'), init_data)
 # FIXME: Add dependencies...
 
 setup(
-    name = 'chacoled',
-    description = 'Chaco Colormap Editor',
-    author = 'Warren Weckesser',
-    author_email = 'warren.weckesser@gmail.com',
-    license = 'BSD',
-    packages = find_packages(),
-    include_package_data = True,
-    version = init_data['__version__'],
-    entry_points = {
+    name='chacoled',
+    description='Chaco Colormap Editor',
+    author='Warren Weckesser',
+    author_email='warren.weckesser@gmail.com',
+    license='BSD',
+    packages=find_packages(),
+    include_package_data=True,
+    version=init_data['__version__'],
+    entry_points={
         'console_scripts': [
             'chacoled = chacoled.colormap_app:main',
         ]
     }
 )
-
