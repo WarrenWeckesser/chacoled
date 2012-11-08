@@ -6,6 +6,7 @@ from math import sqrt
 from traits.api import List, Tuple, Int, Instance, Enum, Float, \
             Bool, Property, Event, Str, Trait, on_trait_change
 from enable.api import Component, KeySpec, BasicEvent
+from kiva.trait_defs.api import KivaFont
 from pyface.action.api import Action, MenuManager, Separator
 
 from unit_map import UnitMap
@@ -16,6 +17,8 @@ point_fmt = "(%.3f,%.3f)"
 class UnitMapPlotter(Component):
 
     unit_map = Instance(UnitMap, ())
+
+    font = KivaFont("modern 10")
 
     # A text label drawn in the upper left corner.
     label = Trait(None, None, Str)
@@ -55,8 +58,9 @@ class UnitMapPlotter(Component):
             gc.stroke_path()
 
             if self.label:
+                gc.set_font(self.font)
                 gc.set_fill_color(self.grid_color + (0.5,))
-                gc.show_text(self.label, xy=(5, h-15))
+                gc.show_text(self.label, (5, h-15))
 
             # Draw the grid.
             res = self.grid_resolutions[self.grid_resolution_index]
@@ -149,6 +153,8 @@ class UnitMapEditor(Component):
     menu_event = Instance(BasicEvent)
 
     unit_map = Instance(UnitMap, ())
+
+    font = KivaFont("modern 10")
 
     # A text label drawn in the upper left corner.
     label = Trait(None, None, Str)
@@ -264,8 +270,9 @@ class UnitMapEditor(Component):
             gc.stroke_path()
 
             if self.label:
+                gc.set_font(self.font)
                 gc.set_fill_color(self.grid_color + (0.5,))
-                gc.show_text(self.label, xy=(5, h-15))
+                gc.show_text(self.label, (5, h-15))
 
             # Draw the grid.
             res = self.grid_resolutions[self.grid_resolution_index]
